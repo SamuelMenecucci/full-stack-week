@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+//com o identificador model eu crio uma tabela dentro do banco
+model Category {
+  //@id diz que o campo será uma chave primária. 
+  //@defaul diz qual será o valor dele. passando o uuid, eu digo que eu não irei passar um valor mas será criado um valor de um id aleatório automaticamente. 
+  id String @id @default(uuid())
+  name String  
+  slug String
+  imageUrl String
+  products Product[]
+}
+
+model Product {
+  id String @id @default(uuid())
+  name String  
+  slug String
+  description String
+  //os número que estão entre parenteses querem dizer que: eu quero que antes da virgula tenham no máximo 8 números e após a virgula 2
+  basePrice Decimal @db.Decimal(8,2)
+  imageUrl String
+  categoryId String
+  category Category @relation(fields: [categoryId], references: [id])
+  discountPercentage Int @default(0)
+}
